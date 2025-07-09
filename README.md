@@ -6,7 +6,7 @@ This repository contains an AWS Lambda function (`lambda-image-processor.py`) wr
 
 
 
-\## Features
+## Features
 
 
 
@@ -18,7 +18,7 @@ This repository contains an AWS Lambda function (`lambda-image-processor.py`) wr
 
 
 
-\## How it Works
+## How it Works
 
 
 
@@ -36,7 +36,7 @@ This repository contains an AWS Lambda function (`lambda-image-processor.py`) wr
 
 
 
-\## Requirements
+## Requirements
 
 
 
@@ -48,11 +48,11 @@ This repository contains an AWS Lambda function (`lambda-image-processor.py`) wr
 
 
 
-\## Setup Instructions
+## Setup Instructions
 
 
 
-\### 1. Prepare the Lambda Function
+### 1. Prepare the Lambda Function
 
 
 
@@ -68,7 +68,7 @@ This repository contains an AWS Lambda function (`lambda-image-processor.py`) wr
 
 
 
-\### 2. Add Pillow Library
+### 2. Add Pillow Library
 
 
 
@@ -76,7 +76,7 @@ AWS Lambda does not include Pillow by default. You must add it using one of thes
 
 
 
-\#### Option A: Use a Lambda Layer
+#### Option A: Use a Lambda Layer
 
 
 
@@ -86,7 +86,7 @@ AWS Lambda does not include Pillow by default. You must add it using one of thes
 
 
 
-\#### Option B: Bundle Pillow with Your Deployment
+#### Option B: Bundle Pillow with Your Deployment
 
 
 
@@ -108,7 +108,7 @@ zip -r9 ../function.zip .
 
 
 
-\### 3. Configure S3 Triggers
+### 3. Configure S3 Triggers
 
 
 
@@ -116,7 +116,7 @@ zip -r9 ../function.zip .
 
 
 
-\### 4. Set Destination Bucket
+### 4. Set Destination Bucket
 
 
 
@@ -130,7 +130,7 @@ zip -r9 ../function.zip .
 
 
 
-\## Example Event
+## Example Event
 
 
 
@@ -172,7 +172,7 @@ The Lambda expects an S3 event like:
 
 
 
-\## Troubleshooting
+## Troubleshooting
 
 
 
