@@ -1,6 +1,6 @@
-\# AWS Lambda S3 Image Processor
+# AWS Lambda S3 Image Processor
 
-
+## Overview
 
 This repository contains an AWS Lambda function (`lambda-image-processor.py`) written in Python that automatically resizes images uploaded to an S3 bucket. When a new image is uploaded, the Lambda function is triggered, resizes the image to 300x300 pixels, and saves the processed image to a destination S3 bucket.
 
