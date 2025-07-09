@@ -90,13 +90,10 @@ The function expects an event structured like this (from S3):
     -  CloudWatch (logs).
 2. Image processing through Pillow
 3. Deployment and debugging pain points:
-       -AWS Console
-       -Permissions
-       -Packaging
-       -Troubleshooting:
-           ~Image-Name
-           ~Image-Type
-           ~Lambda Time-out
+   - AWS Console
+   - Permissions
+   - Packaging
+   - Troubleshooting (Image-Name, Image-Type, Lambda Time-out)
    
 ---
 
