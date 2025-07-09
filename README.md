@@ -81,6 +81,25 @@ The function expects an event structured like this (from S3):
 
 ---
 
+### Learned:
+
+1. Hands-on with core AWS services:
+    - S3 (storage/events)
+    - Lambda (compute/serverless)
+    -  IAM (permissions)
+    -  CloudWatch (logs).
+2. Image processing through Pillow
+3. Deployment and debugging pain points:
+       -AWS Console
+       -Permissions
+       -Packaging
+       -Troubleshooting:
+           ~Image-Name
+           ~Image-Type
+           ~Lambda Time-out
+   
+---
+
 
 **Author:** [DWeller1013](https://github.com/DWeller1013)  
 **Project:** [AWS_Image_Processing](https://github.com/DWeller1013/AWS_Image_Processing)
