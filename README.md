@@ -1,80 +1,45 @@
-# AWS Lambda S3 Image Resizer
+# S3 Lambda Image Processor
 
-This project provides an AWS Lambda function (`lambda-image-processor.py`) written in Python that automatically resizes images uploaded to a source S3 bucket. When a new image file appears in the bucket, the Lambda function is triggered, resizes the image to 300x300 pixels, and saves the processed image to a destination S3 bucket.
+This AWS Lambda function automatically processes images uploaded to a source S3 bucket and saves the processed images to a destination S3 bucket. It is designed to handle a wide range of image formats and edge cases.
 
 ## Features
 
-- **Automatic image resizing:** On new uploads, images are resized to 300x300 pixels.
-- **Seamless S3 integration:** Handles both download from the source bucket and upload to the destination bucket.
-- **Easily customizable:** You can adjust the target size by modifying the code.
+- **Automatic Trigger:** Invoked by S3 event notifications when a new image is uploaded to the source bucket.
+- **Multi-format Support:** Handles PNG, JPEG, GIF, BMP, and other common image types.
+- **Key Decoding:** Robustly decodes S3 object keys to handle spaces and special characters.
+- **Transparency Handling:** Converts images with alpha channels (transparency) to RGB for JPEG compatibility.
+- **Resizing:** Resizes all processed images to 300x300 pixels.
+- **Consistent Output:** Saves all processed images as `.jpg` files to the destination bucket.
+- **Retry Logic:** Retries S3 object retrieval to handle eventual consistency issues.
+- **Logging:** Outputs helpful logs for debugging and traceability.
 
 ## How It Works
 
-1. An image is uploaded to the **source S3 bucket**.
-2. An **S3 event** triggers the Lambda function.
-3. The Lambda function:
-    - Downloads the uploaded image from S3
-    - Resizes it with the [Pillow](https://python-pillow.org/) library
-    - Uploads the resized image to the **destination S3 bucket**
+1. **Upload:** An image is uploaded to the source S3 bucket.
+2. **S3 Event:** The Lambda function is triggered by the S3 `ObjectCreated` event.
+3. **Processing:**
+    - Downloads and decodes the object key
+    - Opens the image using Pillow (PIL)
+    - Converts images with transparency to RGB if saving as JPEG
+    - Resizes the image to 300x300 pixels
+    - Saves the processed image as a `.jpg` file
+4. **Save:** The processed image is uploaded to the destination S3 bucket.
 
-## Requirements
+## Configuration
 
-- AWS Lambda (Python 3.12 runtime recommended)
-- The [Pillow](https://pypi.org/project/Pillow/) library (included in your deployment package)
-- Two S3 buckets: one for source images, one for processed images
-- Appropriate IAM permissions for S3 access
+- **Source Bucket:** The S3 bucket that receives the original images and triggers the Lambda.
+- **Destination Bucket:** The S3 bucket where processed images are saved (update the `dest_bucket` variable in the code).
+- **IAM Role:** The Lambda execution role must have `s3:GetObject` permission for the source bucket and `s3:PutObject` for the destination bucket. It should also have permission to write logs to CloudWatch.
 
-## Deployment Instructions
+## Customization
 
-### 1. Prepare the Lambda Function
+- **Output Format:** By default, all outputs are JPEG. You can modify the code to preserve original formats or handle other output requirements.
+- **Resize Dimensions:** Change the dimensions in the `resize()` call as needed.
+- **Additional Processing:** Add filters, watermarks, or other Pillow operations as desired.
 
-- Place your function code in `lambda-image-processor.py`.
+## Example Event
 
-### 2. Bundle Pillow with Your Code
-
-Install Pillow and create a deployment zip:
-
-```bash
-mkdir package
-pip install Pillow -t package/
-cp lambda-image-processor.py package/
-cd package
-zip -r ../lambda-image-processor.zip .
-```
-
-### 3. Upload the Deployment Package
-
-Upload `lambda-image-processor.zip` to your Lambda function using either the AWS Console or AWS CLI:
-
-```bash
-aws lambda update-function-code \
-  --function-name <your-lambda-name> \
-  --zip-file fileb://lambda-image-processor.zip
-```
-
-### 4. Set the Handler
-
-Set the handler to:
-
-```
-lambda-image-processor.lambda_handler
-```
-
-### 5. Configure the S3 Trigger
-
-Set your source S3 bucket to trigger the Lambda function on object creation events.
-
-### 6. Set the Destination Bucket
-
-Edit the code to specify your destination bucket:
-
-```python
-dest_bucket = 'my-image-processed'
-```
-
-## Example S3 Event
-
-This function expects an S3 event of the following format:
+The function expects an event structured like this (from S3):
 
 ```json
 {
@@ -82,10 +47,10 @@ This function expects an S3 event of the following format:
     {
       "s3": {
         "bucket": {
-          "name": "source-bucket"
+          "name": "your-source-bucket"
         },
         "object": {
-          "key": "image.jpg"
+          "key": "your%20image.png"
         }
       }
     }
@@ -93,9 +58,26 @@ This function expects an S3 event of the following format:
 }
 ```
 
-## License
+## Error Handling
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for more details.
+- If the image is not yet available (due to S3 eventual consistency), the function retries fetching it.
+- If an unsupported or corrupted image is uploaded, the function logs the error and fails gracefully.
+
+## Requirements
+
+- Python 3.8 or newer
+- [Pillow](https://python-pillow.org/) library included in your Lambda deployment package or Lambda Layer
+- AWS permissions for S3 and CloudWatch Logs
+
+## Deployment
+
+1. Package your code (and Pillow if not using a Lambda Layer).
+2. Deploy to Lambda with the appropriate handler and IAM role.
+3. Set up an S3 event trigger for your source bucket.
+
+---
+
+**This function is robust for automation pipelines, batch processing, or as an example of image handling in AWS Lambda.**
 
 ---
 
